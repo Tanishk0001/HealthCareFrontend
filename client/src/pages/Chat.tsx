@@ -1,26 +1,23 @@
-import { useState, useEffect, useRef } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuth } from '@/context/AuthContext';
-import Sidebar from '@/components/Layout/Sidebar';
-import Header from '@/components/Layout/Header';
 import ChatMessageBubble from '@/components/ChatMessageBubble';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import Sidebar from '@/components/Layout/Sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Search, Send, Paperclip, Video } from 'lucide-react';
-import { useLocation } from 'wouter';
-import { socketService } from '@/services/socket';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useAuth } from '@/context/AuthContext';
 import { apiRequest } from '@/services/api';
-import { Message } from '@shared/schema';
+import { socketService } from '@/services/socket';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Paperclip, Search, Send, Video } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'wouter';
 
 export default function Chat() {
   const { user } = useAuth();
   const [selectedUserId, setSelectedUserId] = useState<string>('');
   const [messageInput, setMessageInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
   const [, setLocation] = useLocation();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
@@ -46,15 +43,15 @@ export default function Chat() {
   // Initialize WebSocket connection
   useEffect(() => {
     if (user?.id) {
-      socketService.connect(user.id);
+      socketService.connect(user.id, (window.localStorage.getItem('jwt_token')) || undefined);
 
-      socketService.onMessage((message: Message) => {
+      socketService.onMessage((message: any) => {
         setMessages(prev => [...prev, message]);
         queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
         
         // If the message is from the currently selected user, update the chat
         if (message.senderId === selectedUserId) {
-          queryClient.invalidateQueries({ queryKey: ['/api/chat/messages', selectedUserId] });
+              queryClient.invalidateQueries({ queryKey: ['/api/chat/messages', selectedUserId] });
         }
       });
 
@@ -92,7 +89,7 @@ export default function Chat() {
     });
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e: any) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
@@ -124,11 +121,11 @@ export default function Chat() {
           <div className="p-4 border-b border-border">
             <h2 className="text-lg font-semibold text-foreground mb-3" data-testid="text-messages-title">Messages</h2>
             <div className="relative">
-              <Input
+                <Input
                 type="text"
                 placeholder="Search conversations..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e: any) => setSearchQuery(e.target.value)}
                 className="pl-10 text-sm"
                 data-testid="input-search-conversations"
               />
@@ -282,7 +279,7 @@ export default function Chat() {
                       type="text"
                       placeholder="Type your message..."
                       value={messageInput}
-                      onChange={(e) => setMessageInput(e.target.value)}
+                      onChange={(e: any) => setMessageInput(e.target.value)}
                       onKeyPress={handleKeyPress}
                       className="pr-12"
                       data-testid="input-message"

@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
-import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent } from '@/components/ui/card';
-import { Heart } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { Heart } from 'lucide-react';
+import { useState } from 'react';
+import { useLocation } from 'wouter';
 
 export default function Login() {
   const [isSignup, setIsSignup] = useState(false);
@@ -40,7 +40,7 @@ export default function Login() {
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Authentication failed",
+        description: (error && error.details && error.details.message) ? error.details.message : (error instanceof Error ? error.message : "Authentication failed"),
         variant: "destructive",
       });
     } finally {
@@ -166,6 +166,11 @@ export default function Login() {
               >
                 {isLoading ? 'Please wait...' : (isSignup ? 'Create Account' : 'Sign In')}
               </Button>
+              {!isSignup && (
+                <div className="text-center mt-2">
+                  <button type="button" className="text-sm text-primary underline" onClick={() => setLocation('/signup')}>Don't have an account? Sign up</button>
+                </div>
+              )}
             </form>
           </CardContent>
         </Card>

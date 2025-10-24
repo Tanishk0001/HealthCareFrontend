@@ -1,26 +1,27 @@
-import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
+import ChatAssistant from "@/components/ChatAssistant";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/context/AuthContext";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import ChatAssistant from "@/components/ChatAssistant";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { Route, Switch } from "wouter";
+import { queryClient } from "./lib/queryClient";
 
 // Pages
-import Homepage from "@/pages/Homepage";
-import Login from "@/pages/Login";
-import Contact from "@/pages/Contact";
-import PatientDashboard from "@/pages/PatientDashboard";
-import DoctorDashboard from "@/pages/DoctorDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
-import DoctorList from "@/pages/DoctorList";
 import AppointmentBooking from "@/pages/AppointmentBooking";
 import Chat from "@/pages/Chat";
-import VideoCall from "@/pages/VideoCall";
-import Profile from "@/pages/Profile";
+import Contact from "@/pages/Contact";
+import DoctorDashboard from "@/pages/DoctorDashboard";
+import DoctorList from "@/pages/DoctorList";
+import Homepage from "@/pages/Homepage";
+import Login from "@/pages/Login";
 import NotFound from "@/pages/not-found";
+import PatientDashboard from "@/pages/PatientDashboard";
 import Payment from "@/pages/Payment";
+import Profile from "@/pages/Profile";
+import Signup from "@/pages/Signup";
+import VideoCall from "@/pages/VideoCall";
 
 function Router() {
   return (
@@ -28,6 +29,7 @@ function Router() {
       {/* Public routes */}
       <Route path="/" component={Homepage} />
       <Route path="/login" component={Login} />
+  <Route path="/signup" component={Signup} />
       
       {/* Protected routes */}
       <Route path="/patient">

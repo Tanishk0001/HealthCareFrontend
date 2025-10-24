@@ -1,6 +1,6 @@
-import { useAuth } from '@/context/AuthContext';
 import { Bell, User } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
+import { useAuth } from '../../context/AuthContext';
 
 interface HeaderProps {
   title: string;
@@ -10,6 +10,7 @@ interface HeaderProps {
 
 export default function Header({ title, subtitle, children }: HeaderProps) {
   const { user } = useAuth();
+  const u = user as any;
 
   return (
     <header className="bg-card border-b border-border px-6 py-4">
@@ -24,17 +25,17 @@ export default function Header({ title, subtitle, children }: HeaderProps) {
             <Bell className="w-5 h-5" />
             <span className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full"></span>
           </button>
-          <div className="flex items-center space-x-3">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src="" alt={user?.firstName} />
-              <AvatarFallback>
-                <User className="w-4 h-4" />
-              </AvatarFallback>
-            </Avatar>
-            <span className="text-sm font-medium text-foreground" data-testid="text-username">
-              {user?.firstName} {user?.lastName}
-            </span>
-          </div>
+                  <div className="flex items-center space-x-3">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src="" alt={u?.name || u?.email || 'User'} />
+                      <AvatarFallback>
+                        <User className="w-4 h-4" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm font-medium text-foreground" data-testid="text-username">
+                      {u?.name || `${u?.email || 'User'}`}
+                    </span>
+                  </div>
         </div>
       </div>
     </header>

@@ -1,14 +1,17 @@
-import { Message } from '@shared/schema';
-
 class SocketService {
   private socket: WebSocket | null = null;
-  private messageHandlers: ((message: Message) => void)[] = [];
+  private messageHandlers: ((message: any) => void)[] = [];
   private authHandlers: (() => void)[] = [];
 
-  connect(userId: string) {
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
-    
+  connect(userId: string, token?: string) {
+  // Prefer explicit API base if set in Vite env. Expect value like 'http://localhost:8080'
+  const apiBase = (import.meta.env && import.meta.env.VITE_API_BASE) ? import.meta.env.VITE_API_BASE : `${window.location.protocol}//${window.location.hostname}:8080`;
+  const protocol = apiBase.startsWith('https') ? 'wss:' : 'ws:';
+  // strip protocol from apiBase
+  const host = apiBase.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  const base = `${protocol}//${host}/ws`;
+  const wsUrl = token ? `${base}?token=${encodeURIComponent(token)}` : base;
+
     this.socket = new WebSocket(wsUrl);
 
     this.socket.onopen = () => {
@@ -60,7 +63,7 @@ class SocketService {
     }
   }
 
-  onMessage(handler: (message: Message) => void) {
+  onMessage(handler: (message: any) => void) {
     this.messageHandlers.push(handler);
   }
 

@@ -1,4 +1,4 @@
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { Link, useLocation } from 'wouter';
 import { 
   LayoutDashboard, 
